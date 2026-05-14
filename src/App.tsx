@@ -169,29 +169,25 @@ export default function App() {
   return (
     <div className="min-h-screen selection:bg-doruz-gold selection:text-black font-sans">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-8 py-6">
+      <nav className="fixed top-0 w-full z-50 px-8 py-6 backdrop-blur-md bg-black/5 border-b border-white/5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between">
           <div 
-            className="flex items-center gap-2 md:gap-4 cursor-pointer group" 
+            className="flex items-center cursor-pointer group" 
             onClick={() => navigate('home')}
           >
-            <img 
-              src="/logo.png" 
-              alt="1DORUZ RECORDS" 
-              className="h-10 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              onError={(e) => {
-                // Fallback if image is not yet uploaded
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-            <div className="hidden flex items-center gap-2">
-              <div className="w-8 h-8 bg-doruz-gold rounded-full flex items-center justify-center font-display font-black text-black text-xl italic">
-                D
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-display font-bold text-lg tracking-tighter">1DORUZ</span>
-                <span className="text-[8px] font-black tracking-[0.3em] opacity-60">RECORDS</span>
+            <div className="relative">
+              <img 
+                src="/logo.png" 
+                alt="1DORUZ RECORDS" 
+                className="h-12 md:h-20 w-auto object-contain transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(253,224,71,0.4)]"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <div className="hidden flex flex-col leading-none">
+                <span className="text-doruz-gold font-heavy text-2xl italic tracking-tighter">1DORUZ</span>
+                <span className="text-white font-black text-[8px] tracking-[0.4em] mt-1 uppercase">RECORDS</span>
               </div>
             </div>
           </div>
