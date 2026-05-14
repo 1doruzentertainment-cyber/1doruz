@@ -33,6 +33,8 @@ import {
   Maximize,
   Pause
 } from 'lucide-react';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../convex/_generated/api";
 import { ARTISTS, PRODUCTS, VIDEOS, Product, Artist, Video } from './constants';
 
 type Page = 'home' | 'artists' | 'videos' | 'shop' | 'artist-detail' | 'product-detail' | 'album-links' | 'subscribe' | 'account' | 'admin' | 'checkout';
@@ -78,11 +80,17 @@ export default function App() {
   }, [cart]);
 
   // Simulated User State
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [news, setNews] = useState([
-    { id: 1, title: "RIDEREZZY LONDON TOUR", date: "AUG 2024", image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=800&auto=format&fit=crop" },
-    { id: 2, title: "STATE OF GRACE OUT NOW", date: "SEP 2024", image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=800&auto=format&fit=crop" }
-  ]);
+  // --- Convex Hooks ---
+  const convexNews = useQuery(api.content.getNews);
+  const addNewsMutation = useMutation(api.content.addNews);
+  const removeNewsMutation = useMutation(api.content.removeNews);
+  const seedMutation = useMutation(api.seed.seed);
+
+  // Use Convex news if available, fallback to mock
+  const displayNews = convexNews || [
+    { id: 1 as any, title: "RIDEREZZY LONDON TOUR", date: "AUG 2024", image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=800&auto=format&fit=crop" },
+    { id: 2 as any, title: "STATE OF GRACE OUT NOW", date: "SEP 2024", image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=800&auto=format&fit=crop" }
+  ];
 
   // Auto-scroll hero
   useEffect(() => {
@@ -288,7 +296,7 @@ export default function App() {
       {/* Main Content */}
       <main className="pt-16">
         <AnimatePresence mode="wait">
-          {page === 'home' && <Home key="home" navigate={navigate} heroIndex={heroIndex} setHeroIndex={setHeroIndex} addToCart={addToCart} news={news} />}
+          {page === 'home' && <Home key="home" navigate={navigate} heroIndex={heroIndex} setHeroIndex={setHeroIndex} news={displayNews} />}
           {page === 'artists' && <Artists key="artists" navigate={navigate} />}
           {page === 'artist-detail' && <ArtistDetail key="artist-detail" artist={selectedArtist!} navigate={navigate} />}
           {page === 'videos' && <Videos key="videos" onPlay={setPlayingVideo} />}
@@ -297,7 +305,16 @@ export default function App() {
           {page === 'album-links' && <AlbumLinks key="album-links" navigate={navigate} />}
           {page === 'subscribe' && <Subscribe key="subscribe" />}
           {page === 'account' && <Account key="account" user={currentUser} setUser={setCurrentUser} navigate={navigate} />}
-          {page === 'admin' && <Admin key="admin" news={news} setNews={setNews} navigate={navigate} activeTab={adminTab} setActiveTab={setAdminTab} />}
+          {page === 'admin' && <Admin 
+            key="admin" 
+            news={displayNews} 
+            navigate={navigate} 
+            activeTab={adminTab} 
+            setActiveTab={setAdminTab} 
+            addNewsMutation={addNewsMutation}
+            removeNewsMutation={removeNewsMutation}
+            seedMutation={seedMutation}
+          />}
           {page === 'checkout' && <Checkout key="checkout" cart={cart} total={cartTotal} navigate={navigate} user={currentUser} />}
         </AnimatePresence>
       </main>
@@ -1377,31 +1394,22 @@ function Account({ user, setUser, navigate }: any) {
   );
 }
 
-function Admin({ news, setNews, navigate, activeTab, setActiveTab }: any) {
+function Admin({ news, navigate, activeTab, setActiveTab, addNewsMutation, removeNewsMutation, seedMutation }: any) {
   const [newPost, setNewPost] = useState({ title: '', date: '', image: '' });
 
-  const stats = [
-    { label: 'Total Revenue', value: 'N 4,250,000', icon: CreditCard, color: 'text-green-500' },
-    { label: 'Total Fans', value: '1,284', icon: User, color: 'text-doruz-gold' },
-    { label: 'Pending Orders', value: '12', icon: Package, color: 'text-orange-500' },
-    { label: 'Site Visits', value: '45.2K', icon: LayoutDashboard, color: 'text-blue-500' },
-  ];
-
-  const recentSales = [
-    { id: '#8821', user: 'Blessing Okon', item: 'Doruz Varsity Jacket', price: 'N 85,000', date: '2 Mins Ago' },
-    { id: '#8820', user: 'David Chuks', item: 'Vinyl Record - Wicked', price: 'N 45,000', date: '15 Mins Ago' },
-    { id: '#8819', user: 'Sarah Amadi', item: 'Classic Tee Black', price: 'N 25,000', date: '1 Hour Ago' },
-  ];
-
-  const addPost = () => {
+  const addPost = async () => {
     if (!newPost.title || !newPost.date) return;
-    setNews([{ ...newPost, id: Date.now() }, ...news]);
+    await addNewsMutation({
+      title: newPost.title,
+      date: newPost.date,
+      image: newPost.image || undefined
+    });
     setNewPost({ title: '', date: '', image: '' });
     setActiveTab('content');
   };
 
-  const removePost = (id: number) => {
-    setNews(news.filter((post: any) => post.id !== id));
+  const removePost = async (id: any) => {
+    await removeNewsMutation({ id });
   };
 
   return (
