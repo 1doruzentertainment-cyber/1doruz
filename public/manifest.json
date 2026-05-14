@@ -1,0 +1,22 @@
+{
+  "name": "1DORUZ RECORDS",
+  "short_name": "1DORUZ",
+  "description": "The official digital platform for 1DORUZ RECORDS. Stream the latest music, watch exclusive videos, and shop official merchandise.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0505",
+  "theme_color": "#fde047",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

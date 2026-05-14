@@ -29,7 +29,7 @@ import {
   LayoutDashboard,
   Save
 } from 'lucide-react';
-import { ARTISTS, PRODUCTS, Product, Artist } from './constants';
+import { ARTISTS, PRODUCTS, VIDEOS, Product, Artist, Video } from './constants';
 
 type Page = 'home' | 'artists' | 'videos' | 'shop' | 'artist-detail' | 'product-detail' | 'album-links' | 'subscribe' | 'account' | 'admin' | 'checkout';
 
@@ -88,6 +88,34 @@ export default function App() {
     return () => clearInterval(timer);
   }, [page]);
 
+  // Notifications logic
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      if (permission === 'granted') {
+        new Notification('1DORUZ RECORDS', {
+          body: 'You are now registered for official updates!',
+          icon: '/logo.png'
+        });
+      }
+    }
+  };
+
+  const sendLocalNotification = (title: string, body: string) => {
+    if (notificationPermission === 'granted') {
+      new Notification(title, { body, icon: '/logo.png' });
+    }
+  };
+
   const navigate = (nextPage: Page, params?: any) => {
     setPrevPage(page);
     if (nextPage === 'artist-detail') setSelectedArtist(params);
@@ -131,13 +159,13 @@ export default function App() {
       <nav className="fixed top-0 w-full z-50 px-8 py-6">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between">
           <div 
-            className="flex items-center gap-4 cursor-pointer group" 
+            className="flex items-center gap-2 md:gap-4 cursor-pointer group" 
             onClick={() => navigate('home')}
           >
             <img 
               src="/logo.png" 
               alt="1DORUZ RECORDS" 
-              className="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-10 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               onError={(e) => {
                 // Fallback if image is not yet uploaded
                 e.currentTarget.style.display = 'none';
@@ -159,7 +187,7 @@ export default function App() {
             <button onClick={() => navigate('artists')} className="hover:text-doruz-gold transition-colors">Artists</button>
             <button onClick={() => navigate('videos')} className="hover:text-doruz-gold transition-colors">Videos</button>
             <button onClick={() => navigate('shop')} className="hover:text-doruz-gold transition-colors">Shop</button>
-            <button onClick={() => navigate('subscribe')} className="hover:text-doruz-gold transition-colors">Subscribe</button>
+            <button onClick={() => navigate('subscribe')} className="hover:text-doruz-gold transition-colors">Join</button>
             <button onClick={() => setIsSearchOpen(true)} className="hover:text-doruz-gold transition-colors">
               <Search size={18} strokeWidth={3} />
             </button>
@@ -497,10 +525,11 @@ function Home({ navigate, heroIndex, setHeroIndex, news }: any) {
           {/* Large Typography: MARY (Background) */}
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-0 pointer-events-none select-none">
             <motion.h1 
+              key={heroIndex}
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 1, ease: "circOut" }}
-              className="font-heavy text-[25vw] leading-none text-doruz-gold tracking-tight whitespace-nowrap"
+              className="font-heavy text-[22vw] leading-none text-doruz-gold tracking-tighter whitespace-nowrap italic"
             >
               {currentArtist.name}
             </motion.h1>
@@ -786,18 +815,6 @@ function ArtistDetail({ artist, navigate }: any) {
 }
 
 function Videos() {
-  const videos = [
-    { artist: 'MARY', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'KENZO', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'BRIGHT', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'MAX', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'TEGA', image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'ECHO', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'SATO', image: 'https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'KIEL', image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=800&auto=format&fit=crop' },
-    { artist: 'ENI', image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=800&auto=format&fit=crop' },
-  ];
-
   return (
     <motion.section 
       initial={{ opacity: 0 }}
@@ -806,44 +823,40 @@ function Videos() {
       className="bg-doruz-bg pt-20"
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="py-44 text-center">
-          <h1 className="font-heavy text-7xl md:text-[14rem] font-bold leading-none tracking-tighter text-doruz-gold uppercase select-none">
+        <div className="py-20 md:py-44 text-center px-4">
+          <h1 className="font-heavy text-5xl md:text-7xl lg:text-[14rem] font-bold leading-none tracking-tighter text-doruz-gold uppercase select-none italic">
             VIDEOS
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {videos.map((video, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0">
+          {VIDEOS.map((video, idx) => (
             <motion.div 
-              key={idx}
+              key={video.id}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="group relative aspect-[3/4] overflow-hidden cursor-pointer bg-black border-r border-b border-white/5"
-              onClick={() => alert(`Playing ${video.artist}'s Visual`)}
+              className="group relative aspect-video overflow-hidden cursor-pointer bg-black border border-white/5"
+              onClick={() => alert(`Playing ${video.artist} - ${video.title}`)}
             >
               <img 
                 src={video.image} 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100" 
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60 group-hover:opacity-100" 
                 alt={video.artist} 
               />
               
-              {/* Play Button Overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full border-2 border-doruz-gold flex items-center justify-center backdrop-blur-[2px] transition-transform duration-500 group-hover:scale-110">
-                  <Play size={24} fill="#fde047" className="text-doruz-gold ml-1" />
+                <div className="w-16 h-16 md:w-24 md:h-24 rounded-full border-2 border-doruz-gold flex items-center justify-center backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:bg-doruz-gold/20">
+                  <Play size={32} fill="#fde047" className="text-doruz-gold ml-1" />
                 </div>
               </div>
 
-              {/* Artist Name Overlay (conditional like sato in screen) */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                 <h3 className="font-heavy text-4xl md:text-5xl font-bold uppercase tracking-tighter text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    {video.artist}
+              <div className="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent">
+                 <p className="text-doruz-gold font-black text-[10px] tracking-[0.4em] mb-1 uppercase">Official Visual</p>
+                 <h3 className="font-heavy text-3xl md:text-5xl font-bold uppercase tracking-tighter text-white">
+                    {video.artist} — {video.title}
                   </h3>
               </div>
-
-              {/* Hover highlight */}
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
             </motion.div>
           ))}
         </div>
@@ -1015,41 +1028,70 @@ function AlbumLinks({ navigate }: any) {
   );
 }
 
-function Subscribe() {
+function Subscribe({ requestPermission, permission }: any) {
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: any) => {
+    e.preventDefault();
+    requestPermission();
+    setSubscribed(true);
+  };
+
+  if (subscribed) {
+    return (
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="bg-doruz-bg min-h-screen flex flex-col items-center justify-center p-8 text-center"
+      >
+        <div className="w-24 h-24 bg-doruz-gold rounded-full flex items-center justify-center mb-10 text-black shadow-[0_0_50px_rgba(253,224,71,0.3)]">
+          <Check size={48} strokeWidth={4} />
+        </div>
+        <h1 className="font-heavy text-5xl md:text-7xl text-doruz-gold uppercase italic tracking-tighter mb-4">YOU'RE IN.</h1>
+        <p className="text-white/60 font-display text-xl max-w-md">Welcome to the inner circle. Updates from 1DORUZ will now arrive at your frequency.</p>
+        <div className="mt-12 p-6 border border-white/10 rounded-xl bg-white/5 backdrop-blur-md">
+           <p className="text-[10px] font-black text-doruz-gold uppercase tracking-[0.2em]">Notification Status</p>
+           <p className="text-white font-heavy text-2xl uppercase mt-2 tracking-tighter italic">{permission === 'granted' ? 'CONNECTED' : 'PENDING'}</p>
+        </div>
+      </motion.section>
+    );
+  }
+
   return (
     <motion.section 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-doruz-bg min-h-screen py-32 px-8 flex flex-col items-center justify-center"
+      className="bg-doruz-bg min-h-screen mobile-py px-6 flex flex-col items-center justify-center"
     >
       <div className="w-full max-w-4xl text-center">
-        <h1 className="font-display text-4xl md:text-6xl font-black text-doruz-gold uppercase mb-20 leading-none tracking-tight">
-          SIGN UP FOR<br/>1DORUZ RECORD
+        <h1 className="font-heavy text-5xl md:text-8xl lg:text-[10rem] font-black text-doruz-gold uppercase mb-12 md:mb-20 leading-none tracking-tighter italic">
+          SIGN UP FOR<br/>1DORUZ UPDATES
         </h1>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 text-left mb-20 px-4">
+        <form onSubmit={handleSubscribe} className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 text-left mb-20 px-4">
           <div className="flex flex-col border-b border-doruz-gold pb-2 group">
-            <label className="text-xl font-heavy text-doruz-gold uppercase mb-4">EMAIL</label>
+            <label className="text-[10px] font-black text-doruz-gold uppercase mb-4 tracking-[0.3em]">EMAIL</label>
             <div className="flex justify-between items-center">
               <input 
+                required
                 type="email" 
                 placeholder="USERNAME@GMAIL.COM" 
-                className="bg-transparent border-none focus:outline-none text-white font-heavy text-xl uppercase placeholder-white/20 w-full"
+                className="bg-transparent border-none focus:outline-none text-white font-heavy text-2xl md:text-3xl uppercase placeholder-white/10 w-full"
               />
               <span className="text-doruz-gold font-bold ml-2">*</span>
             </div>
           </div>
 
           <div className="flex flex-col border-b border-doruz-gold pb-2 group">
-            <label className="text-xl font-heavy text-doruz-gold uppercase mb-4">CHOOSE COUNTRY</label>
+            <label className="text-[10px] font-black text-doruz-gold uppercase mb-4 tracking-[0.3em]">COUNTRY</label>
             <div className="flex justify-between items-center relative cursor-pointer">
-              <select className="bg-transparent border-none focus:outline-none text-white font-heavy text-xl uppercase w-full appearance-none pr-8 cursor-pointer">
-                <option className="bg-doruz-bg uppercase">SELECT....</option>
-                <option className="bg-doruz-bg uppercase">Nigeria</option>
-                <option className="bg-doruz-bg uppercase">United States</option>
-                <option className="bg-doruz-bg uppercase">United Kingdom</option>
-                <option className="bg-doruz-bg uppercase">Canada</option>
+              <select required className="bg-transparent border-none focus:outline-none text-white font-heavy text-2xl md:text-3xl uppercase w-full appearance-none pr-8 cursor-pointer">
+                <option value="" className="bg-doruz-bg uppercase">SELECT....</option>
+                <option value="NG" className="bg-doruz-bg uppercase">Nigeria</option>
+                <option value="US" className="bg-doruz-bg uppercase">United States</option>
+                <option value="UK" className="bg-doruz-bg uppercase">United Kingdom</option>
+                <option value="CA" className="bg-doruz-bg uppercase">Canada</option>
               </select>
               <div className="absolute right-0 pointer-events-none">
                 <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-doruz-gold"></div>
@@ -1057,30 +1099,34 @@ function Subscribe() {
             </div>
           </div>
 
-          <div className="md:col-span-2 flex items-center justify-center gap-4 mt-8">
+          <div className="md:col-span-2 flex items-center justify-center gap-6 mt-8">
             <label className="relative flex items-center cursor-pointer group">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-6 h-6 border-2 border-doruz-gold flex items-center justify-center transition-all peer-checked:bg-doruz-gold">
-                <div className="w-2 h-2 bg-doruz-bg " />
+              <input type="checkbox" required className="sr-only peer" />
+              <div className="w-10 h-10 border-2 border-doruz-gold flex items-center justify-center transition-all peer-checked:bg-doruz-gold">
+                <Check size={24} strokeWidth={4} className="text-black" />
               </div>
             </label>
-            <span className="font-heavy text-3xl font-black text-doruz-gold uppercase tracking-tighter">1DORUZ RECORDS</span>
+            <span className="font-heavy text-2xl md:text-5xl font-black text-doruz-gold uppercase tracking-tighter italic">I AGREE TO TERMS</span>
           </div>
+
+          <button 
+            type="submit"
+            className="md:col-span-2 mx-auto inline-block border-2 border-doruz-gold rounded-full px-16 py-6 font-heavy text-2xl md:text-6xl text-doruz-gold hover:bg-doruz-gold hover:text-black transition-all active:scale-95 uppercase tracking-tighter italic"
+          >
+            SUBMIT
+          </button>
         </form>
 
-        <div className="max-w-2xl mx-auto px-6 mb-16">
-          <p className="font-heavy text-[10px] md:text-xs text-doruz-gold uppercase leading-[1.6] tracking-widest">
-            EMAILS WILL BE SENT BY OR ON BEHALF OF 1DORUZ RECORDS 2220 COLORADO AVENUE, SANTA MONICA, CA 90404 (310) 865-4000. YOU MAY WITHDRAW YOUR CONSENT AT ANY TIME. PRIVACY POLICY / DO NOT SELL MY PERSONAL INFORMATION
+        <div className="max-w-2xl mx-auto px-6">
+          <p className="font-heavy text-[10px] text-white/20 uppercase leading-relaxed tracking-[0.2em]">
+            EMAILS WILL BE SENT BY OR ON BEHALF OF 1DORUZ RECORDS. YOU MAY WITHDRAW YOUR CONSENT AT ANY TIME. BY SUBMITTING THIS FORM YOU AGREE TO RECEIVE WEB NOTIFICATIONS.
           </p>
         </div>
-
-        <button className="inline-block border-2 border-doruz-gold rounded-full px-16 py-4 font-heavy text-2xl md:text-4xl text-doruz-gold hover:bg-doruz-gold hover:text-black transition-all active:scale-95 uppercase tracking-tighter">
-          SUBMIT
-        </button>
       </div>
     </motion.section>
   );
 }
+
 
 function Account({ user, setUser, navigate }: any) {
   const [isLogin, setIsLogin] = useState(true);
@@ -1789,9 +1835,9 @@ function ProductDetail({ product, navigate, addToCart, setIsSearchOpen, setIsCar
           {/* Left: Product Visual */}
           <div className="relative flex items-center justify-center">
              {isMusic ? (
-                <div className="relative w-full max-w-[500px] aspect-square">
-                   {/* Disk */}
-                   <div className="absolute right-[-15%] top-1/2 -translate-y-1/2 w-4/5 h-4/5 bg-black rounded-full shadow-2xl border-4 border-white/5">
+                <div className="relative w-full max-w-[300px] md:max-w-[500px] aspect-square">
+                   {/* Disk - hidden on very small screens or moved */}
+                   <div className="absolute right-[-10%] md:right-[-15%] top-1/2 -translate-y-1/2 w-4/5 h-4/5 bg-black rounded-full shadow-2xl border-4 border-white/5">
                      <div className="absolute inset-[40%] rounded-full border border-white/10 flex items-center justify-center">
                        <div className="w-4 h-4 bg-doruz-bg rounded-full border border-white/20" />
                      </div>
@@ -1801,17 +1847,18 @@ function ProductDetail({ product, navigate, addToCart, setIsSearchOpen, setIsCar
                       <img src={product.image} className="w-full h-full object-cover" />
                       {product.name === 'STATE OF GRACE' && (
                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none rotate-[-45deg]">
-                           <span className="font-heavy text-4xl md:text-6xl text-white whitespace-nowrap bg-black/10 px-10 py-4 backdrop-blur-sm border-y border-white/20">STATE OF GRACE</span>
+                           <span className="font-heavy text-2xl md:text-6xl text-white whitespace-nowrap bg-black/10 px-4 md:px-10 py-2 md:py-4 backdrop-blur-sm border-y border-white/20">STATE OF GRACE</span>
                          </div>
                       )}
                    </div>
                 </div>
              ) : (
-                <div className="w-full max-w-[600px] aspect-[4/5] bg-white shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden">
-                  <img src={product.image} className="w-full h-full object-contain p-4" />
+                <div className="w-full max-w-[400px] md:max-w-[600px] aspect-[4/5] bg-white shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden">
+                   <img src={product.image} className="w-full h-full object-contain p-4" />
                 </div>
              )}
           </div>
+
 
           {/* Right: Product Info */}
           <div className="flex flex-col text-white">

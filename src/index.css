@@ -30,3 +30,29 @@
   mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
+
+@layer utilities {
+  .text-responsive-title {
+    @apply text-4xl md:text-7xl lg:text-[14rem];
+  }
+  .mobile-px {
+    @apply px-6 md:px-8 lg:px-20;
+  }
+  .mobile-py {
+    @apply py-20 md:py-32 lg:py-44;
+  }
+}
+
+/* Custom scrollbar for desktop */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #fde047;
+    border-radius: 10px;
+  }
+}
