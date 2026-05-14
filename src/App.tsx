@@ -192,7 +192,7 @@ export default function App() {
             <button onClick={() => navigate('artists')} className="hover:text-doruz-gold transition-colors">Artists</button>
             <button onClick={() => navigate('videos')} className="hover:text-doruz-gold transition-colors">Videos</button>
             <button onClick={() => navigate('shop')} className="hover:text-doruz-gold transition-colors">Shop</button>
-            <button onClick={() => navigate('subscribe')} className="hover:text-doruz-gold transition-colors">Join</button>
+            <button onClick={() => navigate('subscribe')} className="hover:text-doruz-gold transition-colors">Subscribe</button>
             <button onClick={() => setIsSearchOpen(true)} className="hover:text-doruz-gold transition-colors">
               <Search size={18} strokeWidth={3} />
             </button>
@@ -553,20 +553,16 @@ function Home({ navigate, heroIndex, setHeroIndex, news }: any) {
           {/* Right Content */}
           <div className="hidden lg:flex absolute right-12 inset-y-0 z-20 flex-col justify-center gap-16 w-80">
             
-            {/* Poem/Text */}
+            {/* State of Grace CTA */}
             <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-right"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="flex flex-col gap-2 cursor-pointer group"
+              onClick={() => navigate('album-links')}
             >
-              <p className="font-black uppercase tracking-[0.2em] text-[10px] leading-relaxed text-doruz-gold">
-                TOGETHER WE RISE, WE'RE<br/>
-                SOARING HIGH,<br/>
-                BREAKING THE LIMITS,<br/>
-                REACHING THE SKY,<br/>
-                AI, MY DIGITAL FRIEND,
-              </p>
+              <span className="text-lg text-doruz-gold group-hover:text-white transition-colors leading-none font-bold">STATE OF GRACE</span>
+              <span className="text-sm text-white group-hover:text-doruz-gold transition-colors font-bold uppercase tracking-widest">OUT NOW</span>
             </motion.div>
 
             {/* Music Video Preview */}
@@ -594,17 +590,12 @@ function Home({ navigate, heroIndex, setHeroIndex, news }: any) {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="bg-doruz-burgundy p-6 border border-white/5 shadow-2xl relative overflow-hidden"
+              className="bg-doruz-burgundy p-6 border border-white/5 shadow-2xl relative overflow-hidden group cursor-pointer hover:border-doruz-gold transition-all"
+              onClick={() => navigate('shop')}
             >
-              <h4 className="font-black uppercase tracking-[0.2em] text-[10px] mb-4 text-white/80 flex items-center gap-2">
+              <h4 className="text-xs mb-4 text-white/80 flex items-center gap-2 font-bold uppercase tracking-widest">
                 <span className="w-1 h-1 bg-doruz-gold rounded-full" /> SEP 21 — WARRI
               </h4>
-              <div className="mb-4">
-                <p className="font-display font-medium text-lg leading-none tracking-tighter">WARRI AGAIN 2024</p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1 flex items-center gap-1">
-                  GARDEN CITY, OH
-                </p>
-              </div>
               <div className="text-right">
                 <button className="text-[9px] font-black uppercase tracking-[0.2em] hover:text-doruz-gold transition-colors">Calendar</button>
               </div>
@@ -970,78 +961,75 @@ function Shop({ navigate, addToCart }: any) {
 
 function AlbumLinks({ navigate }: any) {
   const services = [
-    { name: 'OFFICIAL STORE', action: 'Shop' },
-    { name: 'Spotify', action: 'Play', icon: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg' },
-    { name: 'Apple Music', action: 'Play', icon: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
-    { name: 'Amazon Music', action: 'Play' },
-    { name: 'Pandora', action: 'Play' },
-    { name: 'YouTube Music', action: 'Play' },
-    { name: 'Tickets', action: 'Go To' },
-    { name: 'TIDAL', action: 'Play' },
-    { name: 'DEEZER', action: 'Play' },
-    { name: 'Amazon Music', action: 'Go To' },
+    { name: 'OFFICIAL STORE', action: 'SHOP', type: 'internal', target: 'shop' },
+    { name: 'SPOTIFY', action: 'PLAY', type: 'external', url: 'https://open.spotify.com' },
+    { name: 'APPLE MUSIC', action: 'PLAY', type: 'external', url: 'https://music.apple.com' },
+    { name: 'AMAZON MUSIC', action: 'PLAY', type: 'external', url: 'https://music.amazon.com' },
+    { name: 'PANDORA', action: 'PLAY', type: 'external', url: 'https://www.pandora.com' },
+    { name: 'YOUTUBE MUSIC', action: 'PLAY', type: 'external', url: 'https://music.youtube.com' },
+    { name: 'DEEZER', action: 'PLAY', type: 'external', url: 'https://www.deezer.com' },
+    { name: 'TICKETS', action: 'GO TO', type: 'internal', target: 'shop' },
   ];
+
+  const handleAction = (service: any) => {
+    if (service.type === 'internal') {
+      navigate(service.target);
+    } else {
+      window.open(service.url, '_blank');
+    }
+  };
 
   return (
     <motion.section 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-doruz-bg min-h-screen pt-32 pb-20 px-8 flex flex-col md:flex-row items-center justify-center gap-16 md:gap-32"
+      className="bg-doruz-bg min-h-screen pt-44 px-8"
     >
-      {/* Left side: Album Cover */}
-      <div className="flex flex-col items-center">
-        <motion.div 
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="w-full max-w-[400px] aspect-square rounded-[3rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.6)] border border-white/5"
-        >
-          <img 
-            src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=800&auto=format&fit=crop" 
-            className="w-full h-full object-cover" 
-            alt="Wicked Album Cover"
-          />
-        </motion.div>
-        <div className="mt-12 text-center">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-1">MARV</p>
-          <p className="text-sm font-black uppercase tracking-[0.3em] text-white">WICKED</p>
-        </div>
-      </div>
-
-      {/* Right side: Links */}
-      <div className="w-full max-w-xl">
-        <div className="text-center mb-10">
-          <p className="font-display text-doruz-gold text-lg tracking-widest uppercase">Choose music service</p>
+      <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center gap-20">
+        <div className="w-full lg:w-1/2">
+           <div className="aspect-square bg-doruz-dark shadow-2xl rounded-3xl overflow-hidden border border-white/5 group relative">
+              <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+           </div>
         </div>
 
-        <div className="space-y-0.5 border-t border-doruz-gold/20">
-          {services.map((service, idx) => (
-            <motion.div 
-              key={idx}
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: idx * 0.05 }}
-              className="flex items-center justify-between py-5 border-b border-doruz-gold/20 group cursor-pointer hover:bg-white/5 px-4 transition-colors"
-            >
-              <div className="flex items-center gap-4">
-                {service.icon && <img src={service.icon} className="w-6 h-6 object-contain grayscale invert group-hover:grayscale-0 group-hover:invert-0 transition-all" />}
-                <span className={`font-display font-bold text-xl tracking-tighter uppercase ${service.name === 'Spotify' ? 'text-green-500' : ''}`}>
-                  {service.name}
-                </span>
-              </div>
-              <button 
-                className="bg-doruz-gold text-black font-black uppercase tracking-[0.2em] text-[10px] items-center px-6 py-2 transition-transform active:scale-95 group-hover:bg-white"
+        <div className="w-full lg:w-1/2 space-y-12">
+          <div className="text-right">
+             <h2 className="text-doruz-gold font-heavy text-4xl uppercase tracking-tight italic">CHOOSE MUSIC SERVICE</h2>
+          </div>
+
+          <div className="space-y-4">
+            {services.map((service, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ x: 50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: idx * 0.05 }}
+                className="flex items-center justify-between py-6 border-b border-white/10 group cursor-pointer"
+                onClick={() => handleAction(service)}
               >
-                {service.action}
-              </button>
-            </motion.div>
-          ))}
+                <div className="flex items-center gap-6">
+                  {service.name === 'SPOTIFY' && <div className="w-10 h-10 bg-[#1DB954] rounded-full flex items-center justify-center text-black font-bold text-xl">S</div>}
+                  {service.name === 'APPLE MUSIC' && <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-black font-bold italic text-xl">A</div>}
+                  {service.name === 'AMAZON MUSIC' && <div className="w-10 h-10 bg-[#00A8E1] rounded-full flex items-center justify-center text-white font-bold">am</div>}
+                  {service.name === 'DEEZER' && <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-white font-bold text-xs italic">DEE</div>}
+                  <span className="text-standard-md text-white group-hover:text-doruz-gold transition-colors">{service.name}</span>
+                </div>
+                <button 
+                  className="bg-doruz-gold text-black font-black px-8 py-3 text-[10px] tracking-[0.3em] uppercase hover:bg-white transition-all shadow-lg active:scale-95"
+                >
+                  {service.action}
+                </button>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </motion.section>
   );
 }
+
 
 function Subscribe({ requestPermission, permission }: any) {
   const [subscribed, setSubscribed] = useState(false);
@@ -1080,13 +1068,13 @@ function Subscribe({ requestPermission, permission }: any) {
       className="bg-doruz-bg min-h-screen mobile-py px-6 flex flex-col items-center justify-center"
     >
       <div className="w-full max-w-4xl text-center">
-        <h1 className="font-heavy text-5xl md:text-8xl lg:text-[10rem] font-black text-doruz-gold uppercase mb-12 md:mb-20 leading-none tracking-tighter italic">
-          SIGN UP FOR<br/>1DORUZ UPDATES
+        <h1 className="text-standard-xl text-doruz-gold mb-12 md:mb-20">
+          SUBSCRIBE FOR<br/>1DORUZ UPDATES
         </h1>
 
         <form onSubmit={handleSubscribe} className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 text-left mb-20 px-4">
           <div className="flex flex-col border-b border-doruz-gold pb-2 group">
-            <label className="text-[10px] font-black text-doruz-gold uppercase mb-4 tracking-[0.3em]">EMAIL</label>
+            <label className="text-standard-sm text-doruz-gold mb-4">EMAIL</label>
             <div className="flex justify-between items-center">
               <input 
                 required
@@ -1099,7 +1087,7 @@ function Subscribe({ requestPermission, permission }: any) {
           </div>
 
           <div className="flex flex-col border-b border-doruz-gold pb-2 group">
-            <label className="text-[10px] font-black text-doruz-gold uppercase mb-4 tracking-[0.3em]">COUNTRY</label>
+            <label className="text-standard-sm text-doruz-gold mb-4">COUNTRY</label>
             <div className="flex justify-between items-center relative cursor-pointer">
               <select required className="bg-transparent border-none focus:outline-none text-white font-heavy text-2xl md:text-3xl uppercase w-full appearance-none pr-8 cursor-pointer">
                 <option value="" className="bg-doruz-bg uppercase">SELECT....</option>
@@ -1121,7 +1109,7 @@ function Subscribe({ requestPermission, permission }: any) {
                 <Check size={24} strokeWidth={4} className="text-black" />
               </div>
             </label>
-            <span className="font-heavy text-2xl md:text-5xl font-black text-doruz-gold uppercase tracking-tighter italic">I AGREE TO TERMS</span>
+            <span className="text-standard-lg text-doruz-gold">I AGREE TO TERMS</span>
           </div>
 
           <button 
@@ -1133,7 +1121,7 @@ function Subscribe({ requestPermission, permission }: any) {
         </form>
 
         <div className="max-w-2xl mx-auto px-6">
-          <p className="font-heavy text-[10px] text-white/20 uppercase leading-relaxed tracking-[0.2em]">
+          <p className="text-standard-sm text-white/20 leading-relaxed">
             EMAILS WILL BE SENT BY OR ON BEHALF OF 1DORUZ RECORDS. YOU MAY WITHDRAW YOUR CONSENT AT ANY TIME. BY SUBMITTING THIS FORM YOU AGREE TO RECEIVE WEB NOTIFICATIONS.
           </p>
         </div>
@@ -1199,7 +1187,7 @@ function Account({ user, setUser, navigate }: any) {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
             <div>
-              <h1 className="font-heavy text-5xl md:text-7xl font-black text-doruz-gold uppercase leading-none tracking-tighter">
+              <h1 className="text-standard-lg text-doruz-gold mb-4">
                 {user.name}'S PROFILE
               </h1>
               <div className="mt-4 inline-flex items-center gap-2 bg-doruz-gold px-4 py-1 rounded-full text-black font-black text-[10px] uppercase tracking-widest">
@@ -1298,10 +1286,10 @@ function Account({ user, setUser, navigate }: any) {
     >
       <div className="w-full max-w-md bg-white/5 border border-white/10 p-12 shadow-2xl">
         <div className="text-center mb-12">
-          <h1 className="font-heavy text-5xl font-black text-doruz-gold uppercase tracking-tighter mb-4 italic">
-            {isLogin ? 'WELCOME BACK' : 'JOIN THE CREW'}
+          <h1 className="text-standard-lg text-doruz-gold mb-4">
+            {isLogin ? 'WELCOME BACK' : 'SUBSCRIBE'}
           </h1>
-          <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+          <p className="text-standard-sm text-white/40">
             {isLogin ? 'Unlock your fan status' : 'Create an account to be a fan'}
           </p>
           {isLogin && (
@@ -1314,7 +1302,7 @@ function Account({ user, setUser, navigate }: any) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-doruz-gold uppercase tracking-widest">Full Name</label>
+              <label className="text-standard-sm text-doruz-gold">Full Name</label>
               <input 
                 required
                 type="text" 
@@ -1326,7 +1314,7 @@ function Account({ user, setUser, navigate }: any) {
             </div>
           )}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-doruz-gold uppercase tracking-widest">Email Address</label>
+            <label className="text-standard-sm text-doruz-gold">Email Address</label>
             <input 
               required
               type="email" 
@@ -1337,7 +1325,7 @@ function Account({ user, setUser, navigate }: any) {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-doruz-gold uppercase tracking-widest">Password</label>
+            <label className="text-standard-sm text-doruz-gold">Password</label>
             <input 
               required
               type="password" 
@@ -1962,6 +1950,7 @@ function VideoPlayerOverlay({ video, onClose }: { video: Video; onClose: () => v
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -1974,6 +1963,7 @@ function VideoPlayerOverlay({ video, onClose }: { video: Video; onClose: () => v
     const updateProgress = () => {
       if (v.duration > 0) {
         setProgress((v.currentTime / v.duration) * 100);
+        setCurrentTime(v.currentTime);
       }
     };
 
@@ -2043,6 +2033,31 @@ function VideoPlayerOverlay({ video, onClose }: { video: Video; onClose: () => v
           onClick={togglePlay}
           autoPlay
         />
+
+        {/* Karaoke Lyrics Overlay */}
+        {video.lyrics && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-center p-12">
+             <AnimatePresence mode="wait">
+               {video.lyrics.map((l, i) => {
+                 const isCurrent = currentTime >= l.time && (i === video.lyrics!.length - 1 || currentTime < video.lyrics![i+1].time);
+                 if (isCurrent) {
+                   return (
+                     <motion.h2
+                       key={i}
+                       initial={{ y: 20, opacity: 0 }}
+                       animate={{ y: 0, opacity: 1 }}
+                       exit={{ y: -20, opacity: 0 }}
+                       className="font-heavy text-4xl md:text-7xl text-doruz-gold uppercase italic tracking-tighter shadow-2xl drop-shadow-2xl bg-black/40 px-8 py-4 backdrop-blur-sm border-y border-doruz-gold/20"
+                     >
+                       {l.text}
+                     </motion.h2>
+                   );
+                 }
+                 return null;
+               })}
+             </AnimatePresence>
+          </div>
+        )}
 
         {/* Controls Overlay */}
         <AnimatePresence>

@@ -81,11 +81,35 @@ export const ARTISTS: Artist[] = [
   }
 ];
 
+export interface Video {
+  id: number;
+  artist: string;
+  title: string;
+  image: string;
+  url: string;
+  lyrics?: { time: number; text: string }[];
+}
+
 export const VIDEOS: Video[] = [
-  { id: 1, artist: 'MARY', title: 'STATE OF GRACE', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+  { 
+    id: 1, 
+    artist: 'MARY', 
+    title: 'STATE OF GRACE', 
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop', 
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    lyrics: [
+      { time: 0, text: "TOGETHER WE RISE, WE'RE" },
+      { time: 2, text: "SOARING HIGH," },
+      { time: 4, text: "BREAKING THE LIMITS," },
+      { time: 6, text: "REACHING THE SKY," },
+      { time: 8, text: "AI, MY DIGITAL FRIEND," },
+      { time: 10, text: "THE JOURNEY NEVER ENDS." }
+    ]
+  },
   { id: 2, artist: 'RIDERIZZY', title: 'LONDON TOUR', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
   { id: 3, artist: 'BRIGHT', title: 'LUMINOUS', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
   { id: 4, artist: 'TEGA', title: 'HEARTBEAT', image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
 ];
+
 
 

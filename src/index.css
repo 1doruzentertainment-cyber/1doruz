@@ -12,6 +12,24 @@
   --color-doruz-gold-muted: #d4af37;
 }
 
+@layer utilities {
+  .text-standard-sm {
+    @apply text-xs md:text-sm font-black tracking-[0.2em] uppercase;
+  }
+  .text-standard-md {
+    @apply text-xl md:text-2xl font-heavy uppercase tracking-tighter italic;
+  }
+  .text-standard-lg {
+    @apply text-3xl md:text-5xl font-heavy uppercase tracking-tighter italic;
+  }
+  .text-standard-xl {
+    @apply text-5xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter italic;
+  }
+  .text-responsive-title {
+    @apply text-[15vw] md:text-[22vw] leading-none text-doruz-gold tracking-tighter whitespace-nowrap italic font-heavy;
+  }
+}
+
 @layer base {
   body {
     @apply bg-doruz-bg text-white selection:bg-doruz-gold selection:text-black;
