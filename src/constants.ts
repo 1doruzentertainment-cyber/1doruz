@@ -82,9 +82,10 @@ export const ARTISTS: Artist[] = [
 ];
 
 export const VIDEOS: Video[] = [
-  { id: 1, artist: 'MARY', title: 'STATE OF GRACE', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop', url: '#' },
-  { id: 2, artist: 'RIDERIZZY', title: 'LONDON TOUR', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop', url: '#' },
-  { id: 3, artist: 'BRIGHT', title: 'LUMINOUS', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop', url: '#' },
-  { id: 4, artist: 'TEGA', title: 'HEARTBEAT', image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop', url: '#' },
+  { id: 1, artist: 'MARY', title: 'STATE OF GRACE', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+  { id: 2, artist: 'RIDERIZZY', title: 'LONDON TOUR', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
+  { id: 3, artist: 'BRIGHT', title: 'LUMINOUS', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
+  { id: 4, artist: 'TEGA', title: 'HEARTBEAT', image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop', url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
 ];
+
 

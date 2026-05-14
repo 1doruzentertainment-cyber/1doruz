@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useMemo, FormEvent } from 'react';
+import { useState, useEffect, useMemo, FormEvent, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ShoppingBag, 
@@ -27,7 +27,11 @@ import {
   Truck,
   Package,
   LayoutDashboard,
-  Save
+  Save,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Pause
 } from 'lucide-react';
 import { ARTISTS, PRODUCTS, VIDEOS, Product, Artist, Video } from './constants';
 
@@ -66,6 +70,7 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [playingVideo, setPlayingVideo] = useState<Video | null>(null);
 
   // Persistence
   useEffect(() => {
@@ -286,7 +291,7 @@ export default function App() {
           {page === 'home' && <Home key="home" navigate={navigate} heroIndex={heroIndex} setHeroIndex={setHeroIndex} addToCart={addToCart} news={news} />}
           {page === 'artists' && <Artists key="artists" navigate={navigate} />}
           {page === 'artist-detail' && <ArtistDetail key="artist-detail" artist={selectedArtist!} navigate={navigate} />}
-          {page === 'videos' && <Videos key="videos" />}
+          {page === 'videos' && <Videos key="videos" onPlay={setPlayingVideo} />}
           {page === 'shop' && <Shop key="shop" navigate={navigate} addToCart={addToCart} />}
           {page === 'product-detail' && <ProductDetail key="product-detail" product={selectedProduct!} navigate={navigate} addToCart={addToCart} setIsSearchOpen={setIsSearchOpen} setIsCartOpen={setIsCartOpen} cartCount={cartCount} />}
           {page === 'album-links' && <AlbumLinks key="album-links" navigate={navigate} />}
@@ -464,6 +469,16 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Video Player Overlay */}
+      <AnimatePresence>
+        {playingVideo && (
+          <VideoPlayerOverlay 
+            video={playingVideo} 
+            onClose={() => setPlayingVideo(null)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -560,7 +575,7 @@ function Home({ navigate, heroIndex, setHeroIndex, news }: any) {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.7 }}
               className="group cursor-pointer self-end"
-              onClick={() => navigate('videos')}
+              onClick={() => setPlayingVideo(VIDEOS[0])}
             >
               <span className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-white/60">SHE MUSIC VIDEO</span>
               <div className="w-52 aspect-video bg-black relative border border-white/10 group-hover:border-doruz-gold transition-colors">
@@ -814,7 +829,7 @@ function ArtistDetail({ artist, navigate }: any) {
   );
 }
 
-function Videos() {
+function Videos({ onPlay }: { onPlay: (v: Video) => void }) {
   return (
     <motion.section 
       initial={{ opacity: 0 }}
@@ -837,7 +852,7 @@ function Videos() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               className="group relative aspect-video overflow-hidden cursor-pointer bg-black border border-white/5"
-              onClick={() => alert(`Playing ${video.artist} - ${video.title}`)}
+              onClick={() => onPlay(video)}
             >
               <img 
                 src={video.image} 
@@ -1938,5 +1953,182 @@ function ProductDetail({ product, navigate, addToCart, setIsSearchOpen, setIsCar
         </div>
       </div>
     </motion.section>
+  );
+}
+
+/* Video Player Component */
+
+function VideoPlayerOverlay({ video, onClose }: { video: Video; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const controlsTimeoutRef = useRef<any>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    const updateProgress = () => {
+      if (v.duration > 0) {
+        setProgress((v.currentTime / v.duration) * 100);
+      }
+    };
+
+    v.addEventListener('timeupdate', updateProgress);
+    v.addEventListener('play', () => setIsPlaying(true));
+    v.addEventListener('pause', () => setIsPlaying(false));
+
+    return () => {
+      v.removeEventListener('timeupdate', updateProgress);
+    };
+  }, []);
+
+  const togglePlay = (e?: any) => {
+    if (e) e.stopPropagation();
+    if (videoRef.current?.paused) {
+      videoRef.current.play();
+    } else {
+      videoRef.current?.pause();
+    }
+  };
+
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = (Number(e.target.value) / 100) * (videoRef.current?.duration || 0);
+    if (videoRef.current) videoRef.current.currentTime = newTime;
+    setProgress(Number(e.target.value));
+  };
+
+  const toggleMute = (e: any) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const toggleFullscreen = (e: any) => {
+    e.stopPropagation();
+    if (videoRef.current?.requestFullscreen) {
+      videoRef.current.requestFullscreen();
+    }
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Background Blur */}
+      <div className="absolute inset-0 z-0 opacity-30">
+        <img src={video.image} className="w-full h-full object-cover blur-3xl" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[1200px] aspect-video bg-black shadow-[0_0_100px_rgba(0,0,0,0.8)] group">
+        <video 
+          ref={videoRef}
+          src={video.url}
+          className="w-full h-full object-contain cursor-pointer"
+          onClick={togglePlay}
+          autoPlay
+        />
+
+        {/* Controls Overlay */}
+        <AnimatePresence>
+          {showControls && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="absolute inset-x-0 bottom-0 p-6 md:p-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col gap-6"
+            >
+              {/* Progress Bar */}
+              <div className="w-full group/progress relative">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={progress}
+                  onChange={handleProgressChange}
+                  className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-doruz-gold hover:h-2 transition-all"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                  <button onClick={togglePlay} className="text-white hover:text-doruz-gold transition-colors">
+                    {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" />}
+                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <button onClick={toggleMute} className="text-white hover:text-doruz-gold transition-colors">
+                      {isMuted || volume === 0 ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                    </button>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="1" 
+                      step="0.1"
+                      value={isMuted ? 0 : volume}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+                        setVolume(v);
+                        if (videoRef.current) videoRef.current.volume = v;
+                        if (v > 0) setIsMuted(false);
+                      }}
+                      className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+
+                  <div className="hidden md:block">
+                    <h4 className="text-white font-heavy text-xl uppercase tracking-tighter italic leading-none">{video.artist}</h4>
+                    <p className="text-doruz-gold font-black text-[10px] tracking-[0.4em] uppercase mt-1">{video.title}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <button onClick={toggleFullscreen} className="text-white/60 hover:text-white transition-colors">
+                    <Maximize size={20} />
+                  </button>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onClose(); }}
+                    className="bg-white/10 hover:bg-white text-white hover:text-black w-10 h-10 rounded-full flex items-center justify-center transition-all"
+                  >
+                    <X size={20} strokeWidth={3} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Center Play/Pause Large Icon on Toggle */}
+        <AnimatePresence>
+          {!isPlaying && !showControls && (
+             <motion.div 
+               initial={{ scale: 0.8, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               exit={{ scale: 1.2, opacity: 0 }}
+               className="absolute inset-0 flex items-center justify-center pointer-events-none"
+             >
+                <div className="w-24 h-24 rounded-full bg-doruz-gold/20 backdrop-blur-xl flex items-center justify-center border-2 border-doruz-gold/50">
+                   <Play size={40} fill="#fde047" className="text-doruz-gold ml-2" />
+                </div>
+             </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 }
