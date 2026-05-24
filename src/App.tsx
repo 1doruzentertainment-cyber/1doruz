@@ -167,25 +167,25 @@ export default function App() {
   [cart]);
 
   return (
-    <div className="min-h-screen selection:bg-doruz-gold selection:text-black font-sans">
+    <div className="min-h-screen selection:bg-doruz-gold selection:text-black font-sans overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-8 py-6 backdrop-blur-md bg-black/5 border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 px-4 md:px-8 py-4 md:py-6 backdrop-blur-md bg-black/5 border-b border-white/5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between">
           <div 
             className="flex items-center cursor-pointer group" 
             onClick={() => navigate('home')}
           >
-            <div className="relative">
+            <div className="relative flex items-center justify-start -ml-2 md:-ml-4">
               <img 
                 src="/logo.png" 
                 alt="1DORUZ RECORDS" 
-                className="h-12 md:h-20 w-auto object-contain transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(253,224,71,0.4)]"
+                className="h-16 md:h-24 w-auto max-w-[200px] md:max-w-[300px] object-contain transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(253,224,71,0.4)]"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.nextElementSibling?.classList.remove('hidden');
                 }}
               />
-              <div className="hidden flex flex-col leading-none">
+              <div className="hidden flex flex-col leading-none ml-2">
                 <span className="text-doruz-gold font-heavy text-2xl italic tracking-tighter">1DORUZ</span>
                 <span className="text-white font-black text-[8px] tracking-[0.4em] mt-1 uppercase">RECORDS</span>
               </div>
@@ -271,6 +271,9 @@ export default function App() {
                     </button>
                     <button onClick={() => navigate('admin', 'users')} className="hover:text-white text-left transition-all hover:translate-x-4 flex items-center gap-4">
                       <User size={32} /> Fan Database
+                    </button>
+                    <button onClick={() => navigate('admin', 'cosmetics')} className="hover:text-white text-left transition-all hover:translate-x-4 flex items-center gap-4">
+                      <Settings size={32} /> Cosmetics
                     </button>
                   </div>
                 </div>
@@ -507,7 +510,7 @@ function Home({ navigate, heroIndex, setHeroIndex, news }: any) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="relative h-screen w-full overflow-hidden flex items-center justify-center pt-16"
+        className="relative h-screen w-full overflow-hidden flex items-center justify-center pt-16 px-4 md:px-0"
       >
         {/* Background Graphic elements if needed / Layering */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#2b0505_100%)] opacity-40" />
@@ -1078,7 +1081,7 @@ function Subscribe({ requestPermission, permission }: any) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-doruz-bg min-h-screen mobile-py px-6 flex flex-col items-center justify-center"
+      className="bg-doruz-bg min-h-screen mobile-py mobile-px flex flex-col items-center justify-center"
     >
       <div className="w-full max-w-4xl text-center">
         <h1 className="text-standard-xl text-doruz-gold mb-12 md:mb-20">
@@ -1195,7 +1198,7 @@ function Account({ user, setUser, navigate }: any) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="bg-doruz-bg min-h-screen py-32 px-8"
+        className="bg-doruz-bg min-h-screen mobile-py mobile-px"
       >
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
@@ -1425,7 +1428,7 @@ function Admin({ news, navigate, activeTab, setActiveTab, addNewsMutation, remov
            </div>
            
            <div className="flex flex-wrap gap-4">
-              {['dashboard', 'content', 'sales', 'users'].map((tab) => (
+              {['dashboard', 'content', 'sales', 'users', 'cosmetics'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -1616,6 +1619,126 @@ function Admin({ news, navigate, activeTab, setActiveTab, addNewsMutation, remov
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'cosmetics' && (
+            <div className="space-y-12 animate-in fade-in">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="bg-white/5 border border-white/10 p-8 shadow-xl">
+                  <h3 className="font-heavy text-doruz-gold text-2xl mb-8 uppercase italic flex items-center gap-3">
+                    <Settings size={20} /> Site Colors
+                  </h3>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Primary Color (Gold)</label>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-doruz-gold rounded-full border border-white/20 shadow-[0_0_15px_rgba(253,224,71,0.2)]"></div>
+                        <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="#fde047" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Background Color (Burgundy/Dark)</label>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-doruz-bg rounded-full border border-white/20"></div>
+                        <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="#4a0404" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-8 shadow-xl">
+                  <h3 className="font-heavy text-doruz-gold text-2xl mb-8 uppercase italic flex items-center gap-3">
+                    <Maximize size={20} /> Typography & Media
+                  </h3>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Header Font</label>
+                      <div className="relative">
+                        <select className="bg-black/40 border border-white/10 p-3 text-white font-display w-full appearance-none focus:border-doruz-gold focus:outline-none transition-colors">
+                          <option>Syne (Heavy)</option>
+                          <option>Oswald (Display)</option>
+                          <option>Inter (Sans)</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                          <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] border-t-doruz-gold"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Main Logo URL</label>
+                        <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="/logo.png" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Logo Size</label>
+                        <div className="relative">
+                          <select className="bg-black/40 border border-white/10 p-3 text-white font-display w-full appearance-none focus:border-doruz-gold focus:outline-none transition-colors">
+                            <option>Medium (h-24)</option>
+                            <option>Small (h-12)</option>
+                            <option>Large (h-32)</option>
+                            <option>X-Large (h-48)</option>
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] border-t-doruz-gold"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 p-8 shadow-xl">
+                 <h3 className="font-heavy text-doruz-gold text-2xl mb-8 uppercase italic flex items-center gap-3">
+                   <Settings size={20} /> Brand Information
+                 </h3>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                   <div>
+                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Brand Name</label>
+                     <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="1DORUZ RECORDS" />
+                   </div>
+                   <div>
+                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Footer Copyright Text</label>
+                     <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="© 2026 1DORUZ RECORDS. ALL RIGHTS RESERVED." />
+                   </div>
+                   <div className="md:col-span-2">
+                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2">Contact Email</label>
+                     <input type="text" className="bg-black/40 border border-white/10 p-3 text-white font-display w-full focus:border-doruz-gold focus:outline-none transition-colors" defaultValue="info@1doruz.com" />
+                   </div>
+                 </div>
+
+                 <h3 className="font-heavy text-doruz-gold text-2xl mb-8 uppercase italic flex items-center gap-3 border-t border-white/10 pt-8">
+                   <LayoutDashboard size={20} /> Global Site Settings
+                 </h3>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <label className="flex items-center justify-between p-4 border border-white/10 bg-black/20 cursor-pointer hover:border-doruz-gold/50 transition-colors">
+                     <div>
+                       <span className="block font-bold uppercase text-sm">Enable Hero Video</span>
+                       <span className="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Play background video on home</span>
+                     </div>
+                     <div className="w-12 h-6 bg-doruz-gold rounded-full relative">
+                       <div className="absolute right-1 top-1 w-4 h-4 bg-black rounded-full"></div>
+                     </div>
+                   </label>
+                   
+                   <label className="flex items-center justify-between p-4 border border-white/10 bg-black/20 cursor-pointer hover:border-doruz-gold/50 transition-colors">
+                     <div>
+                       <span className="block font-bold uppercase text-sm">Maintenance Mode</span>
+                       <span className="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Hide site from public</span>
+                     </div>
+                     <div className="w-12 h-6 bg-white/20 rounded-full relative">
+                       <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                     </div>
+                   </label>
+                 </div>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button className="bg-doruz-gold text-black font-black px-12 py-4 uppercase tracking-[0.3em] text-[10px] hover:bg-white transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_20px_rgba(253,224,71,0.3)]">
+                  <Save size={16} /> Save Appearance
+                </button>
               </div>
             </div>
           )}
@@ -1840,7 +1963,7 @@ function ProductDetail({ product, navigate, addToCart, setIsSearchOpen, setIsCar
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 items-center">
           
           {/* Left: Product Visual */}
-          <div className="relative flex items-center justify-center">
+          <div className="relative h-screen flex items-center justify-center overflow-hidden">
              {isMusic ? (
                 <div className="relative w-full max-w-[300px] md:max-w-[500px] aspect-square">
                    {/* Disk - hidden on very small screens or moved */}

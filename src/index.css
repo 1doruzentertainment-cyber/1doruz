@@ -32,7 +32,16 @@
 
 @layer base {
   body {
-    @apply bg-doruz-bg text-white selection:bg-doruz-gold selection:text-black;
+    @apply bg-doruz-bg text-white selection:bg-doruz-gold selection:text-black overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .mobile-px {
+    @apply px-6 md:px-12 lg:px-24;
+  }
+  .mobile-py {
+    @apply py-20 md:py-32;
   }
 }
 
