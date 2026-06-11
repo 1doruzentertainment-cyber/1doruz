@@ -1,0 +1,6 @@
+{
+  "name": "1DORUZ RECORDS",
+  "description": "A premium music label website with a modern dark luxury aesthetic, artist management, and demo submissions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

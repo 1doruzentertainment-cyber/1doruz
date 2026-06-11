@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "Artist": {
+      "title": "Artist",
+      "description": "A musical artist signed to or associated with the label.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "bio": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "genres": { "type": "array", "items": { "type": "string" } },
+        "socialLinks": { "type": "object" },
+        "bookingEmail": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "bio", "imageUrl"]
+    },
+    "Release": {
+      "title": "Release",
+      "description": "A music release (Single, EP, or Album).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "artistId": { "type": "string" },
+        "artistName": { "type": "string" },
+        "releaseDate": { "type": "string", "format": "date-time" },
+        "coverArtUrl": { "type": "string" },
+        "type": { "enum": ["Single", "EP", "Album"] },
+        "streamingLinks": { "type": "object" },
+        "featured": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "artistId", "releaseDate", "coverArtUrl", "type"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "An upcoming show, concert, or festival.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "location": { "type": "string" },
+        "venue": { "type": "string" },
+        "ticketLink": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "date", "location"]
+    },
+    "News": {
+      "title": "News",
+      "description": "A news article or blog post.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "author": { "type": "string" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "publishedAt"]
+    },
+    "Demo": {
+      "title": "Demo Submission",
+      "description": "An artist's demo submission for the label.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "artistName": { "type": "string" },
+        "email": { "type": "string" },
+        "demoUrl": { "type": "string" },
+        "bio": { "type": "string" },
+        "status": { "enum": ["pending", "reviewed", "accepted", "rejected"] },
+        "submittedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["artistName", "email", "demoUrl"]
+    },
+    "Gallery": {
+      "title": "Gallery Item",
+      "description": "An image or video for the gallery.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["image", "video"] },
+        "url": { "type": "string" },
+        "caption": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "url"]
+    }
+  },
+  "firestore": {
+    "artists": { "schema": "Artist", "description": "Collection of signed artists." },
+    "releases": { "schema": "Release", "description": "Collection of music releases." },
+    "events": { "schema": "Event", "description": "Upcoming events and shows." },
+    "news": { "schema": "News", "description": "News articles and label updates." },
+    "demos": { "schema": "Demo", "description": "Unsolicited demo submissions." },
+    "gallery": { "schema": "Gallery", "description": "Photo and video gallery assets." }
+  }
+}
