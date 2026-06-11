@@ -51,7 +51,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-0">
         <div className="grid grid-cols-1 md:grid-cols-12 border-b border-white/10">
           {/* Featured Sections Title */}
-          <div className="col-span-12 md:col-span-3 border-r border-white/10 p-10 flex flex-col justify-between bg-[#0A0A0A]">
+          <div className="col-span-12 md:col-span-3 border-r border-white/10 p-10 flex flex-col justify-between bg-card">
              <div>
                <span className="text-gold-500 text-[10px] uppercase tracking-widest font-bold">In Focus</span>
                <h2 className="mt-4 font-serif text-4xl font-bold leading-none text-white italic">Curated <br/>Talent</h2>
@@ -88,7 +88,7 @@ export default function Home() {
       {/* Latest Releases Grid */}
       <section className="mx-auto max-w-7xl border-b border-white/10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-          <div className="p-10 bg-[#0A0A0A] border-r border-white/10 flex flex-col justify-between">
+          <div className="p-10 bg-card border-r border-white/10 flex flex-col justify-between">
             <div>
               <span className="text-gold-500 text-[10px] uppercase tracking-widest font-bold">Catalog</span>
               <h2 className="mt-4 font-serif text-4xl font-bold leading-none text-white italic">New <br/>Sounds</h2>
@@ -137,7 +137,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="md:col-span-4 p-10 bg-[#0A0A0A] flex flex-col justify-between">
+        <div className="md:col-span-4 p-10 bg-card flex flex-col justify-between">
            <span className="text-[10px] text-[#C5A059] uppercase tracking-widest font-bold">Upcoming World Tour</span>
            <div className="space-y-6 mt-8">
              {(events ?? []).map(event => (

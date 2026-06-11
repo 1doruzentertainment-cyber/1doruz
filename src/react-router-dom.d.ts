@@ -7,5 +7,5 @@ declare module "react-router-dom" {
   export function BrowserRouter(props: { children: React.ReactNode }): React.ReactElement;
   export function Routes(props: { children: React.ReactNode }): React.ReactElement;
   export function Route(props: { path?: string; element?: React.ReactNode; children?: React.ReactNode }): React.ReactElement;
-  export   function Link(props: { to: string; children?: React.ReactNode; className?: string; onClick?: () => void; key?: string | number }): React.ReactElement;
+  export function Link(props: { to: string; children?: React.ReactNode; className?: string; style?: React.CSSProperties; onClick?: () => void; key?: string | number }): React.ReactElement;
 }

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Disc, User } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
+import ThemeToggle from './ThemeToggle';
 import { cn } from '../lib/utils';
 
 const USER_LINKS = [
@@ -28,6 +31,12 @@ export default function Navbar() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const siteConfig = useQuery(api.config.get);
+
+  const primaryColor = siteConfig?.primaryColor || '#C5A059';
+  const brandName = siteConfig?.logoText || '1DORUZ';
+  const tagLine = 'RECORDS';
+  const logoUrl = siteConfig?.logoUrl;
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('user'));
@@ -36,7 +45,16 @@ export default function Navbar() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  useEffect(() => {
+    if (siteConfig?.primaryColor) {
+      document.documentElement.style.setProperty('--accent-color', siteConfig.primaryColor);
+    }
+  }, [siteConfig?.primaryColor]);
+
   useEffect(() => setIsOpen(false), [location]);
+
+  const accentStyle = { color: primaryColor };
+  const borderAccentStyle = { borderColor: `${primaryColor}33` };
 
   const links = isAdminPath ? ADMIN_LINKS : USER_LINKS;
 
@@ -54,12 +72,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={cn(
-        'sticky top-0 z-50 w-full transition-all duration-500 bg-[#0A0A0A] border-b border-[#C5A059]/20 py-4'
-      )}
+      className="sticky top-0 z-50 w-full transition-all duration-500 bg-card py-4"
+      style={borderAccentStyle}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 md:px-10">
-        {/* Mobile Header Layout */}
         <div className="flex items-center justify-between w-full md:hidden">
           <button
             className="text-zinc-100 p-2 -ml-2 active:scale-95 transition-transform touch-manipulation"
@@ -70,28 +86,45 @@ export default function Navbar() {
           </button>
           
           <Link to="/" className="flex items-center gap-3 shrink-0 group">
-            <span className="font-serif text-[16px] font-bold tracking-[0.1em] text-white whitespace-nowrap uppercase">
-              1DORUZ <span className="text-[#C5A059] font-light">RECORDS</span>
-            </span>
+            {logoUrl ? (
+              <img src={logoUrl} alt={brandName} className="h-6 object-contain" />
+            ) : (
+              <span className="font-serif text-[16px] font-bold tracking-[0.1em] text-white whitespace-nowrap uppercase">
+                {brandName} <span className="font-light" style={accentStyle}>{tagLine}</span>
+              </span>
+            )}
           </Link>
 
-          <Link
-            to={getAccountLink()}
-            className="p-2 -mr-2 text-[#C5A059] active:scale-95 transition-transform touch-manipulation"
-          >
-            <User size={20} />
-          </Link>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Link
+              to={getAccountLink()}
+              className="p-2 -mr-2 active:scale-95 transition-transform touch-manipulation"
+              style={accentStyle}
+            >
+              <User size={20} />
+            </Link>
+          </div>
         </div>
 
-        {/* Desktop Logo Layout */}
         <Link to="/" className="hidden md:flex items-center gap-4 shrink-0 group">
-          <div className="w-10 h-10 bg-[#C5A059] flex-shrink-0 flex items-center justify-center font-bold text-black text-xl font-sans group-hover:scale-105 transition-transform">1D</div>
-          <span className="font-serif text-2xl font-bold tracking-[0.05em] text-white whitespace-nowrap">
-            1DORUZ <span className="text-[#C5A059] font-light">RECORDS</span>
-          </span>
+          {logoUrl ? (
+            <img src={logoUrl} alt={brandName} className="h-10 object-contain" />
+          ) : (
+            <>
+              <div
+                className="w-10 h-10 flex-shrink-0 flex items-center justify-center font-bold text-black text-xl font-sans group-hover:scale-105 transition-transform"
+                style={{ backgroundColor: primaryColor }}
+              >
+                {brandName.charAt(0)}
+              </div>
+              <span className="font-serif text-2xl font-bold tracking-[0.05em] text-white whitespace-nowrap">
+                {brandName} <span className="font-light" style={accentStyle}>{tagLine}</span>
+              </span>
+            </>
+          )}
         </Link>
 
-        {/* Desktop Nav */}
         <div className="hidden items-center gap-10 md:flex">
           {links.map((link) => (
             <Link
@@ -99,27 +132,27 @@ export default function Navbar() {
               to={link.href}
               className={cn(
                 'relative text-[11px] font-bold uppercase tracking-[0.2em] transition-colors hover:text-gold-500',
-                location.pathname === link.href ? 'text-gold-500' : 'text-zinc-400'
+                location.pathname === link.href ? 'text-gold-500' : 'text-muted'
               )}
             >
               {link.name}
             </Link>
           ))}
           <div className="h-4 w-[1px] bg-white/20 mx-2" />
+          <ThemeToggle />
           <Link
             to={getAccountLink()}
-            className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C5A059] hover:text-white transition-colors flex items-center gap-2"
+            className="text-[11px] font-bold uppercase tracking-[0.2em] transition-colors flex items-center gap-2"
+            style={accentStyle}
           >
             <User size={14} /> {getAccountLabel()}
           </Link>
         </div>
       </div>
 
-      {/* Mobile Side Drawer */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -128,13 +161,13 @@ export default function Navbar() {
               className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm md:hidden"
             />
             
-            {/* Drawer */}
             <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 z-[70] w-[280px] bg-[#0A0A0A] border-r border-[#C5A059]/10 p-8 shadow-2xl md:hidden"
+              className="fixed inset-y-0 left-0 z-[70] w-[280px] bg-card border-r p-8 shadow-2xl md:hidden"
+              style={{ borderColor: `${primaryColor}1a` }}
             >
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between mb-12">
@@ -167,7 +200,8 @@ export default function Navbar() {
                   <Link
                     to={getAccountLink()}
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full border border-[#C5A059] px-6 py-4 text-xs font-bold uppercase tracking-widest text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-colors"
+                    className="flex items-center justify-center gap-2 w-full border px-6 py-4 text-xs font-bold uppercase tracking-widest transition-colors"
+                    style={{ borderColor: primaryColor, color: primaryColor }}
                   >
                     <User size={16} /> {getAccountLabel()}
                   </Link>

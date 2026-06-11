@@ -193,7 +193,7 @@ export default function DemoSubmission() {
                     <div className="w-full border-t border-zinc-800/50"></div>
                   </div>
                   <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-[0.3em]">
-                    <span className="bg-[#050505] px-4 text-zinc-600">OR PROVIDE LINK</span>
+                    <span className="bg-page px-4 text-zinc-600">OR PROVIDE LINK</span>
                   </div>
                 </div>
 

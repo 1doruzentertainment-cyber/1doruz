@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 export default function AdminReleases() {
   const releases = useQuery(api.releases.list);
   return (
-    <div className="min-h-screen bg-[#050505] p-4 sm:p-8 lg:p-12 overflow-x-hidden">
+    <div className="min-h-screen bg-page p-4 sm:p-8 lg:p-12 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 sm:mb-16">
           <div>

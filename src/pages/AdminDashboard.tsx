@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] pb-24">
+    <div className="min-h-screen bg-page pb-24">
       {/* Content Area */}
       <main className="p-4 sm:p-8 lg:p-12">
         <div className="max-w-7xl mx-auto">

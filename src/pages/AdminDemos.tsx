@@ -7,7 +7,7 @@ export default function AdminDemos() {
   const demos = useQuery(api.demos.list);
 
   return (
-    <div className="min-h-screen bg-[#050505] p-4 sm:p-8 lg:p-12">
+    <div className="min-h-screen bg-page p-4 sm:p-8 lg:p-12">
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 sm:mb-16">
           <div>

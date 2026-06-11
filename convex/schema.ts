@@ -88,7 +88,8 @@ export default defineSchema({
       v.literal("rejected"),
     ),
   })
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_email", ["email"]),
 
   contacts: defineTable({
     name: v.string(),
@@ -114,4 +115,12 @@ export default defineSchema({
   })
     .index("by_token", ["token"])
     .index("by_email", ["email"]),
+
+  siteConfig: defineTable({
+    logoUrl: v.optional(v.string()),
+    logoText: v.string(),
+    primaryColor: v.string(),
+    siteTitle: v.string(),
+    siteDescription: v.string(),
+  }),
 });

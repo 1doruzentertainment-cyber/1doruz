@@ -10,6 +10,7 @@
 
 import type * as artists from "../artists.js";
 import type * as auth from "../auth.js";
+import type * as config from "../config.js";
 import type * as contact from "../contact.js";
 import type * as demos from "../demos.js";
 import type * as emails from "../emails.js";
@@ -29,6 +30,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   artists: typeof artists;
   auth: typeof auth;
+  config: typeof config;
   contact: typeof contact;
   demos: typeof demos;
   emails: typeof emails;

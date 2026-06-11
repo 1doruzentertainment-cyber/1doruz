@@ -9,7 +9,10 @@ import {
   Shield,
   Camera,
   Check,
-  KeyRound
+  KeyRound,
+  Loader2,
+  FileAudio,
+  ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from 'convex/react';
@@ -21,8 +24,10 @@ export default function UserProfile() {
   const stored = localStorage.getItem('user');
   const userData = stored ? JSON.parse(stored) : null;
   const userId = userData?.id;
+  const userEmail = userData?.email;
 
   const user = useQuery(api.users.getById, userId ? { id: userId as any } : 'skip');
+  const myDemos = useQuery(api.demos.getByEmail, userEmail ? { email: userEmail } : 'skip');
 
   const [activeView, setActiveView] = useState('overview');
   const [isSaving, setIsSaving] = useState(false);
@@ -104,7 +109,7 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] pt-24 sm:pt-32 pb-24 px-4 sm:px-6 overflow-x-hidden">
+    <div className="min-h-screen bg-page pt-24 sm:pt-32 pb-24 px-4 sm:px-6 overflow-x-hidden">
       <div className="max-w-5xl mx-auto">
         <div className="grid lg:grid-cols-[300px_1fr] gap-8 lg:gap-12">
           
@@ -162,18 +167,54 @@ export default function UserProfile() {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-12"
                 >
-                  <section className="luxury-card p-5 sm:p-12">
+                    <section className="luxury-card p-5 sm:p-12">
                     <div className="flex items-center gap-3 mb-8 sm:mb-10">
                       <Music4 className="text-gold-500" size={20} />
                       <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">Your Demo Vault</h3>
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-widest ml-auto">
+                        {myDemos?.length ?? 0} submission{(myDemos?.length ?? 0) !== 1 ? 's' : ''}
+                      </span>
                     </div>
 
                     <div className="space-y-4 sm:space-y-6">
-                      <div className="p-8 text-center border border-dashed border-zinc-800">
-                        <Music4 size={24} className="mx-auto text-zinc-600 mb-3" />
-                        <p className="text-zinc-500 text-sm">No demo submissions yet.</p>
-                        <p className="text-[10px] text-zinc-700 uppercase tracking-widest mt-1">Your submissions will appear here</p>
-                      </div>
+                      {myDemos === undefined ? (
+                        <div className="p-8 text-center">
+                          <Loader2 size={20} className="mx-auto text-zinc-600 animate-spin" />
+                        </div>
+                      ) : myDemos.length === 0 ? (
+                        <div className="p-8 text-center border border-dashed border-zinc-800">
+                          <Music4 size={24} className="mx-auto text-zinc-600 mb-3" />
+                          <p className="text-zinc-500 text-sm">No demo submissions yet.</p>
+                          <p className="text-[10px] text-zinc-700 uppercase tracking-widest mt-1">Your submissions will appear here</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {myDemos.map((demo) => (
+                            <div key={demo._id} className="flex items-center justify-between p-5 border border-zinc-800 hover:border-zinc-700 transition-colors">
+                              <div className="flex items-center gap-4 min-w-0">
+                                <FileAudio size={20} className="text-zinc-600 shrink-0" />
+                                <div className="min-w-0">
+                                  <p className="text-sm text-white font-medium truncate">{demo.artistName}</p>
+                                  <p className="text-[10px] text-zinc-600 uppercase tracking-widest mt-0.5">
+                                    Status: <span className={cn(
+                                      "font-bold",
+                                      demo.status === 'pending' && 'text-yellow-500',
+                                      demo.status === 'reviewed' && 'text-blue-500',
+                                      demo.status === 'accepted' && 'text-green-500',
+                                      demo.status === 'rejected' && 'text-red-500'
+                                    )}>{demo.status}</span>
+                                  </p>
+                                </div>
+                              </div>
+                              {demo.demoUrl && (
+                                <a href={demo.demoUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-gold-500 transition-colors p-2">
+                                  <ExternalLink size={16} />
+                                </a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       <button 
                         onClick={() => navigate('/submit-demo')}

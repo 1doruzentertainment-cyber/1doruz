@@ -10,7 +10,7 @@
   --color-gold-200: #fde4af;
   --color-gold-300: #fccd7d;
   --color-gold-400: #fbae4f;
-  --color-gold-500: #C5A059; /* Updated Theme Gold */
+  --color-gold-500: #C5A059;
   --color-gold-600: #b8860b;
   --color-gold-700: #966d09;
   --color-gold-800: #7a580a;
@@ -28,10 +28,59 @@
   }
 }
 
+:root {
+  --bg-primary: #050505;
+  --bg-secondary: #0A0A0A;
+  --bg-card: #0A0A0A;
+  --text-primary: #E5E5E5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(197, 160, 89, 0.3);
+  --bg-input: #09090b;
+  --bg-table-row: rgba(24, 24, 27, 0.3);
+}
+
+[data-theme="light"] {
+  --bg-primary: #fafafa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(197, 160, 89, 0.5);
+  --bg-input: #f4f4f5;
+  --bg-table-row: rgba(0, 0, 0, 0.02);
+}
+
 @layer base {
   body {
-    @apply bg-[#050505] text-[#E5E5E5] antialiased selection:bg-gold-500/30 selection:text-gold-100 overflow-x-hidden;
+    @apply antialiased selection:bg-gold-500/30 selection:text-gold-100 overflow-x-hidden;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
+}
+
+@utility bg-page {
+  background-color: var(--bg-primary);
+}
+
+@utility bg-card {
+  background-color: var(--bg-card);
+}
+
+@utility text-body {
+  color: var(--text-primary);
+}
+
+@utility text-muted {
+  color: var(--text-secondary);
+}
+
+@utility border-card {
+  border-color: var(--border-color);
 }
 
 @layer components {
@@ -40,7 +89,12 @@
   }
   
   .luxury-card {
-    @apply border border-white/10 bg-[#0A0A0A] transition-all duration-500 hover:border-gold-500/30 rounded-none;
+    @apply border transition-all duration-500 rounded-none;
+    border-color: var(--border-color);
+    background-color: var(--bg-card);
+  }
+  .luxury-card:hover {
+    border-color: var(--border-hover);
   }
 
   .text-luxury {
@@ -48,6 +102,6 @@
   }
 
   .grid-border {
-    @apply border border-white/10;
+    border-color: var(--border-color);
   }
 }

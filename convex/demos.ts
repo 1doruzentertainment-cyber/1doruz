@@ -9,6 +9,17 @@ export const list = query({
   },
 });
 
+export const getByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("demos")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .order("desc")
+      .collect();
+  },
+});
+
 export const getByStatus = query({
   args: { status: v.union(v.literal("pending"), v.literal("reviewed"), v.literal("accepted"), v.literal("rejected")) },
   handler: async (ctx, args) => {

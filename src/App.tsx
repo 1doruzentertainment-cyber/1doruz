@@ -58,7 +58,7 @@ export default function App() {
     <Router>
       <ScrollToTop />
       <SessionGuard>
-        <div className="flex min-h-screen flex-col bg-[#050505]">
+        <div className="flex min-h-screen flex-col bg-page">
           <Navbar />
           <main className="flex-grow">
             <AnimatePresence mode="wait">

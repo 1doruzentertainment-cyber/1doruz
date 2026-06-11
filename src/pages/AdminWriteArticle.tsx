@@ -52,7 +52,7 @@ export default function AdminWriteArticle() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] p-4 sm:p-8 lg:p-12">
+    <div className="min-h-screen bg-page p-4 sm:p-8 lg:p-12">
       <div className="max-w-5xl mx-auto">
         <button 
           onClick={() => navigate('/admin/news')}
