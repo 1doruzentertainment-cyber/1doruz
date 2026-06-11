@@ -105,6 +105,11 @@ export const loginWithPassword = mutation({
       throw new Error("Invalid email or password.");
     }
 
+    if (ADMIN_EMAILS.includes(user.email) && user.role !== "admin") {
+      await ctx.db.patch(user._id, { role: "admin" });
+      user.role = "admin";
+    }
+
     return { id: user._id, email: user.email, role: user.role, isNewUser: false, name: user.name };
   },
 });
