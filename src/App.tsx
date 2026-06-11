@@ -22,6 +22,7 @@ import AdminAddArtist from './pages/AdminAddArtist';
 import AdminAddRelease from './pages/AdminAddRelease';
 import AdminWriteArticle from './pages/AdminWriteArticle';
 import AdminNewAsset from './pages/AdminNewAsset';
+import AdminTeam from './pages/AdminTeam';
 import UserProfile from './pages/UserProfile';
 import Login from './pages/Login';
 import CompleteProfile from './pages/CompleteProfile';
@@ -81,6 +82,7 @@ export default function App() {
               <Route path="/admin/releases/new" element={<AdminGuard><AdminAddRelease /></AdminGuard>} />
               <Route path="/admin/news/new" element={<AdminGuard><AdminWriteArticle /></AdminGuard>} />
               <Route path="/admin/assets/new" element={<AdminGuard><AdminNewAsset /></AdminGuard>} />
+              <Route path="/admin/team" element={<AdminGuard><AdminTeam /></AdminGuard>} />
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/complete-profile" element={<CompleteProfile />} />

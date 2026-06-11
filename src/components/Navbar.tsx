@@ -19,6 +19,7 @@ const ADMIN_LINKS = [
   { name: 'Releases', href: '/admin/releases' },
   { name: 'News', href: '/admin/news' },
   { name: 'Demos', href: '/admin/demos' },
+  { name: 'Team', href: '/admin/team' },
   { name: 'Settings', href: '/admin/settings' },
 ];
 

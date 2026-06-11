@@ -3,7 +3,7 @@ import { mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 const TOKEN_EXPIRY_MS = 15 * 60 * 1000;
-const ADMIN_EMAILS = ["riderezzy.gg@gmail.com"];
+const ADMIN_EMAILS = ["riderezzy.gg@gmail.com", "riderezzy@gmail.com"];
 
 async function hashPassword(password: string, salt: string): Promise<string> {
   const encoder = new TextEncoder();

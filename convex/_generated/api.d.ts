@@ -17,6 +17,7 @@ import type * as events from "../events.js";
 import type * as gallery from "../gallery.js";
 import type * as news from "../news.js";
 import type * as releases from "../releases.js";
+import type * as team from "../team.js";
 import type * as users from "../users.js";
 
 import type {
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   gallery: typeof gallery;
   news: typeof news;
   releases: typeof releases;
+  team: typeof team;
   users: typeof users;
 }>;
 
