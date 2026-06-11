@@ -43,3 +43,42 @@ export const update = mutation({
     }
   },
 });
+
+export const generateUploadUrl = mutation({
+  args: { callerId: v.id("users") },
+  handler: async (ctx, args) => {
+    const caller = await ctx.db.get(args.callerId);
+    if (!caller || caller.role !== "admin") {
+      throw new Error("Only admins can upload files.");
+    }
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+export const saveLogo = mutation({
+  args: {
+    callerId: v.id("users"),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const caller = await ctx.db.get(args.callerId);
+    if (!caller || caller.role !== "admin") {
+      throw new Error("Only admins can update the logo.");
+    }
+    const logoUrl = await ctx.storage.getUrl(args.storageId);
+    if (!logoUrl) throw new Error("Failed to retrieve uploaded file URL.");
+
+    const configs = await ctx.db.query("siteConfig").collect();
+    if (configs.length === 0) {
+      await ctx.db.insert("siteConfig", {
+        logoUrl,
+        logoText: "1DORUZ",
+        primaryColor: "#C5A059",
+        siteTitle: "1DORUZ RECORDS",
+        siteDescription: "",
+      });
+    } else {
+      await ctx.db.patch(configs[0]._id, { logoUrl });
+    }
+  },
+});

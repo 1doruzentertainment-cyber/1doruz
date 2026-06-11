@@ -1,12 +1,12 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { 
-  Settings as SettingsIcon, 
-  Palette, 
   Globe, 
   Check,
   Save,
-  Image
+  Image,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -28,8 +28,13 @@ export default function AdminSettings() {
   const [primaryColor, setPrimaryColor] = useState('');
   const [siteTitle, setSiteTitle] = useState('');
   const [siteDescription, setSiteDescription] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateConfig = useMutation(api.config.update);
+  const generateUploadUrl = useMutation(api.config.generateUploadUrl);
+  const saveLogo = useMutation(api.config.saveLogo);
 
   useEffect(() => {
     if (siteConfig) {
@@ -44,6 +49,26 @@ export default function AdminSettings() {
       setSiteTitle('1DORUZ RECORDS | Premium Independent Label');
     }
   }, [siteConfig]);
+
+  const handleUpload = async (file: File) => {
+    if (!callerId || !file) return;
+    setIsUploading(true);
+    try {
+      const uploadUrl = await generateUploadUrl({ callerId: callerId as any });
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        body: file,
+      });
+      const { storageId } = await response.json();
+      await saveLogo({ callerId: callerId as any, storageId: storageId as any });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch {
+      alert('Upload failed.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
@@ -122,15 +147,46 @@ export default function AdminSettings() {
                      <h3 className="font-serif text-[22px] sm:text-2xl font-bold text-white mb-8 italic border-b border-zinc-900 pb-4">Brand Identity</h3>
                      <div className="space-y-8">
                        <div className="space-y-3">
-                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059]">Logo Image URL</label>
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059]">Logo Image</label>
                          <div className="flex items-center gap-4">
-                           <div className="w-14 h-14 bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+                           <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
                              {logoUrl ? (
                                <img src={logoUrl} alt="logo preview" className="w-full h-full object-contain" />
                              ) : (
-                               <Image size={20} className="text-zinc-600" />
+                               <Image size={24} className="text-zinc-600" />
                              )}
                            </div>
+                           <div className="space-y-3 flex-1">
+                             <input
+                               type="file"
+                               ref={fileInputRef}
+                               accept="image/*"
+                               className="hidden"
+                               onChange={(e) => {
+                                 const file = e.target.files?.[0];
+                                 if (file) handleUpload(file);
+                               }}
+                             />
+                             <button
+                               type="button"
+                               onClick={() => fileInputRef.current?.click()}
+                               disabled={isUploading}
+                               className="flex items-center justify-center gap-2 px-6 py-4 border border-zinc-800 text-[10px] font-bold uppercase tracking-widest text-white hover:border-gold-500 transition-all disabled:opacity-50"
+                             >
+                               {isUploading ? (
+                                 <><Loader2 size={14} className="animate-spin" /> Uploading...</>
+                               ) : (
+                                 <><Upload size={14} /> Upload Logo</>
+                               )}
+                             </button>
+                             <p className="text-[9px] text-zinc-600 uppercase tracking-widest">PNG, JPG, SVG or WebP</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div className="space-y-3">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059]">Logo Image URL</label>
+                         <div className="flex gap-3">
                            <input
                              type="url"
                              value={logoUrl}
@@ -142,7 +198,7 @@ export default function AdminSettings() {
                        </div>
 
                        <div className="space-y-3">
-                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059]">Logo Text</label>
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059]">Logo Text (fallback)</label>
                          <input
                            type="text"
                            value={logoText}
